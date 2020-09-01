@@ -1,0 +1,1 @@
+/home/garga/Projetos/Python/Instelike/geckodriver
