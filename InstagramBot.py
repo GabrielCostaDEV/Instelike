@@ -172,7 +172,8 @@ class InstagramBot:
             campo_email.send_keys(self.listaPerfis[self.contador])
             campo_email.send_keys(Keys.RETURN)
             time.sleep(3)
-            campo_senha = driver.find_element_by_xpath('//input[@name="password"]').click()
+            campo_senha = driver.find_element_by_xpath('//input[@name="password"]')
+            campo_senha.click()
             campo_senha.send_keys(self.listaPerfis[self.contador+1])
             campo_senha.send_keys(Keys.RETURN)
         except:

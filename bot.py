@@ -4,18 +4,25 @@ listaPerfis = []
 try:
     file = open('contas.txt', 'r')
     for i in file:
-        corte = i
-        listaPerfis.append(corte[:-1])
+        if i != '\n':
+            corte = i
+            listaPerfis.append(corte[:-1])
 finally:        
-    file.close()    
+    file.close()   
 
 caminho = ''
 try:
     arquivo = open('caminho.txt', 'r')
-    caminho = arquivo.readline()
-    #caminho = caminho[:-1]
+    if '\n' in arquivo.read():
+        arquivo.seek(0)
+        caminho = arquivo.read()[:-1]
+    else:    
+        arquivo.seek(0)
+        caminho = arquivo.read()
 finally:        
     arquivo.close()
+    if '\n' in caminho:    
+        print(caminho)
 
 robo = InstagramBot(listaPerfis, caminho)        
 cont = 0
