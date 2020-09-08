@@ -38,30 +38,6 @@ class InstagramBot:
         nova = url[26:(len(url)-1)]
         return nova
 
-    def buscar_xpath(self, xpath):
-        self.xpath = xpath
-        driver = self.driver
-        while True:
-            try:
-                driver.find_element_by_xpath(self.xpath).click()
-                break
-            except:
-                driver.refresh()
-                time.sleep(5)
-            return True  
-
-    def buscar_classe(self, classe):
-        self.classe = classe
-        driver = self.driver
-        while True:
-            try:
-                driver.find_element_by_class_name(self.classe).click()
-                break
-            except:
-                driver.refresh()
-                time.sleep(5)
-            return True
-
     def logarInsta(self):
         driver = self.driver
         url = self.pegarUrl() #pegar url
@@ -70,13 +46,17 @@ class InstagramBot:
 
         #trocar perfil
         if self.trocar:
-            self.buscar_classe('HoLwm')
+            classe = driver.find_element_by_class_name('HoLwm')
+            classe.click()
             time.sleep(randint(2, 5))
-            driver.find_element_by_class_name('gmFkV').click()
+            classe = driver.find_element_by_class_name('gmFkV')
+            classe.click()
             time.sleep(randint(2, 5))
-            sair = self.buscar_classe('wpO6b')
+            sair = driver.find_element_by_class_name('wpO6b')
+            sair.click()
             time.sleep(randint(2, 5))
-            self.buscar_xpath('//button[text()="Sair"]')
+            sair = driver.find_element_by_xpath('//button[text()="Sair"]')
+            sair.click()
 
             self.logado = False
             self.trocar = False
@@ -105,53 +85,57 @@ class InstagramBot:
             
             #Não salvar:
             time.sleep(randint(2, 5))  
-            self.buscar_xpath("/html/body/div[1]/section/main/div/div/div/div/button")
+            salvar = driver.find_element_by_xpath("//button[text()='Agora não']")
+            salvar.click()
             
             #Ativar notificações:
             time.sleep(randint(2, 5))
-            self.buscar_classe('HoLwm')   
+            classe = driver.find_element_by_class_name('HoLwm')   
+            classe.click()
             self.logado = True  
             self.contador += 2
 
         #Pesquisar
-        while True:
-            try:
-                time.sleep(randint(2, 5))
-                buscar = driver.find_element_by_class_name('TqC_a')
-                buscar.click()
-                time.sleep(randint(2, 5))
-                buscar = driver.find_element_by_xpath('//input[@data-focus-visible-added=""]')
-                buscar.click()
-                time.sleep(randint(2, 5))
-                buscar.clear()
-                time.sleep(randint(2, 5))
-                buscar.send_keys(url)
-                time.sleep(randint(1, 5))
-                buscar = driver.find_element_by_xpath('//a[@href="/' + url + '/"]').click()
-                time.sleep(randint(1, 5))
-                break
-            except:
-                self.logarInsta()
-                time.sleep(5)
+        try:
+            time.sleep(randint(2, 5))
+            buscar = driver.find_element_by_class_name('TqC_a')
+            buscar.click()
+            time.sleep(randint(2, 5))
+            buscar = driver.find_element_by_xpath('//input[@data-focus-visible-added=""]')
+            buscar.click()
+            time.sleep(randint(2, 5))
+            buscar.clear()
+            time.sleep(randint(2, 5))
+            buscar.send_keys(url)
+            time.sleep(randint(1, 5))
+            buscar = driver.find_element_by_xpath('//a[@href="/' + url + '/"]')
+            buscar.click()
+            time.sleep(randint(1, 5))
+        except:
+            self.logarInsta()
+            time.sleep(5)
 
         if driver.current_url != ('https://www.instagram.com/' + url + '/'): #se a url de pesquisa for igual a url referência:
             driver.get('https://www.instagram.com/' + url + '/')
         #Clicando em seguir:
         try:
-            seguir = driver.find_element_by_class_name('_6VtSN').click()
+            seguir = driver.find_element_by_class_name('_6VtSN')
+            seguir.click()
             time.sleep(randint(1, 5))
         except:
             return False
 
         try:
-            driver.find_element_by_class_name('HoLwm').click()
+            classe = driver.find_element_by_class_name('HoLwm')
+            classe.click()
             time.sleep(randint(1, 5))
             driver.refresh()
         except:
             return False
 
         try:
-            driver.find_element_by_xpath('//button[text()="OK"]').click()
+            xpath = driver.find_element_by_xpath('//button[text()="OK"]')
+            xpath.click()
             time.sleep(5)
             driver.refresh()
         except:
@@ -185,7 +169,8 @@ class InstagramBot:
 
         #Selecionar perfil:
         time.sleep(3)
-        self.buscar_xpath("/html/body/main/x-active-template/div/div/div/div/div/div/form/x-active-template/div[1]/div[1]/div")
+        usuario = driver.find_element_by_xpath("/html/body/main/x-active-template/div/div/div/div/div/div/form/x-active-template/div[1]/div[1]/div")
+        usuario.click()
 
         #Verificar o número de perfis:
         time.sleep(3)
@@ -199,7 +184,8 @@ class InstagramBot:
         print(f'Número de perfis: {len(self.perfis)}')
         
         #Botão ganhe moedas: 
-        self.buscar_xpath('//a[@data-text="earn-coins"]')
+        earn_coins = driver.find_element_by_xpath('//a[@data-text="earn-coins"]')
+        earn_coins.click()
 
     def entrarDireto(self):
         driver = self.driver
@@ -232,27 +218,28 @@ class InstagramBot:
         print('abas: ',self.abas)
         time.sleep(1)
         try:
-            driver.find_element_by_xpath('//button[@data-text="confirm"]').click()    
+            confirmar = driver.find_element_by_xpath('//button[@data-text="confirm"]')
+            confirmar.click()    
             time.sleep(1)
         except:
             time.sleep(1)
 
         if len(self.abas) >= 1:    
-            self.abas.pop()                
-        time.sleep(1)
-        driver.refresh()
+            self.abas.pop()   
         time.sleep(2)    
         print('abas: ',self.abas)  
 
         try:       
             time.sleep(1)
-            self.buscar_xpath('/html/body/aside[1]/div[2]/ul[2]/li[4]/div/img')
+            buscar = driver.find_element_by_xpath('/html/body/aside[1]/div[2]/ul[2]/li[4]/div/img')
+            buscar.click()
             time.sleep(1)
             if self.perfil >= (len(self.perfis)-1):
                 self.perfil = 0
             else:
                 self.perfil += 1
-            self.buscar_xpath(self.perfis[self.perfil])
+            buscar = driver.find_element_by_xpath(self.perfis[self.perfil])
+            buscar.click()
             time.sleep(1)
             self.trocar = True
         except:
@@ -266,7 +253,8 @@ class InstagramBot:
             if len(self.abas) > 1:    
                 driver.switch_to_window(self.abas[0])                
             try:
-                driver.find_element_by_xpath('//button[@data-text="confirm"]').click()
+                buscar = driver.find_element_by_xpath('//button[@data-text="confirm"]')
+                buscar.click()
                 time.sleep(2)
             except:
                 time.sleep(2)
@@ -278,32 +266,40 @@ class InstagramBot:
             if (self.checarBotao('/html/body/main/x-active-template/div/div/div[2]/div/div/div/div[3]/div/div[2]/div[2]/form') == False) or (self.trocar == True):
                 try:
                     time.sleep(1)
-                    self.buscar_xpath('/html/body/main/x-active-template/div/div/div[2]/form/div/div/div[1]')
+                    select = driver.find_element_by_xpath('/html/body/main/x-active-template/div/div/div[2]/form/div/div/div[1]')
+                    select.click()
                     time.sleep(1)
-                    self.buscar_xpath('/html/body/main/x-active-template/div/div/div[2]/form/div/div/div[3]/div/label[2]/input')
+                    select = driver.find_element_by_xpath('/html/body/main/x-active-template/div/div/div[2]/form/div/div/div[3]/div/label[2]/input')
+                    select.click()
                     time.sleep(1)
-                    self.buscar_xpath('/html/body/main/x-active-template/div/div/div[2]/form/button')
+                    select = driver.find_element_by_xpath('/html/body/main/x-active-template/div/div/div[2]/form/button')
+                    select.click()
                     time.sleep(1)
                     #Botão Ganhe moedas
-                    self.buscar_xpath('/html/body/main/x-active-template/div/div/div[2]/div/div/div/div[3]/div/div[2]/div[2]/form')
+                    earn_coins = driver.find_element_by_xpath('/html/body/main/x-active-template/div/div/div[2]/div/div/div/div[3]/div/div[2]/div[2]/form')
+                    earn_coins.click()
                 except:
                     self.selecionarPerfil()
                     time.sleep(5)
             else:
-                self.buscar_xpath('/html/body/main/x-active-template/div/div/div[2]/div/div/div/div[3]/div/div[2]/div[2]/form')
+                atualizar = driver.find_element_by_xpath('/html/body/main/x-active-template/div/div/div[2]/div/div/div/div[3]/div/div[2]/div[2]/form')
             time.sleep(3)
         
         else:
             try:
                 time.sleep(1)
-                self.buscar_xpath('/html/body/main/x-active-template/div/div/div[2]/form/div/div/div[1]')
+                select = driver.find_element_by_xpath('/html/body/main/x-active-template/div/div/div[2]/form/div/div/div[1]')
+                select.click()
                 time.sleep(1)
-                self.buscar_xpath('/html/body/main/x-active-template/div/div/div[2]/form/div/div/div[3]/div/label[2]/input')
+                select = driver.find_element_by_xpath('/html/body/main/x-active-template/div/div/div[2]/form/div/div/div[3]/div/label[2]/input')
+                select.click()
                 time.sleep(1)
-                self.buscar_xpath('/html/body/main/x-active-template/div/div/div[2]/form/button')
+                select = driver.find_element_by_xpath('/html/body/main/x-active-template/div/div/div[2]/form/button')
+                select.click()
                 time.sleep(1)
                 #Botão Ganhe moedas
-                self.buscar_xpath('/html/body/main/x-active-template/div/div/div[2]/div/div/div/div[3]/div/div[2]/div[2]/form')
+                earn_coins = driver.find_element_by_xpath('/html/body/main/x-active-template/div/div/div[2]/div/div/div/div[3]/div/div[2]/div[2]/form')
+                earn_coins.click()
             except:
                 self.selecionarPerfil()
                 time.sleep(5)

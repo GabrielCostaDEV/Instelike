@@ -23,7 +23,7 @@ finally:
     arquivo.close()
     if '\n' in caminho:    
         print(caminho)
-
+        
 robo = InstagramBot(listaPerfis, caminho)        
 cont = 0
 robo.loginInstelike()#0
